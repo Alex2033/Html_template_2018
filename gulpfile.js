@@ -1,8 +1,8 @@
-var syntax        = 'sass'; // Syntax: sass or scss;
+var syntax        = 'styl';
 
 var gulp          = require('gulp'),
 		gutil         = require('gulp-util' ),
-		sass          = require('gulp-sass'),
+		stylus          = require('gulp-stylus'),
 		browsersync   = require('browser-sync'),
 		concat        = require('gulp-concat'),
 		uglify        = require('gulp-uglify'),
@@ -26,7 +26,7 @@ gulp.task('browser-sync', function() {
 });
 
 gulp.task('pug', function() {
-	return gulp.src('app/pug/*.pug')
+	return gulp.src('app/pug/pages/*.pug')
 	.pipe(pug({
 		pretty: true
 	}))
@@ -34,8 +34,8 @@ gulp.task('pug', function() {
 });
 
 gulp.task('styles', function() {
-	return gulp.src('app/'+syntax+'/*.'+syntax+'')
-	.pipe(sass({ outputStyle: 'expand' }).on("error", notify.onError()))
+	return gulp.src('app/styl/main.styl')
+	.pipe(stylus({ 'include css': true }).on("error", notify.onError()))
 	.pipe(rename({ suffix: '.min', prefix : '' }))
 	.pipe(autoprefixer(['last 15 versions']))
 	.pipe(cleancss( {level: { 1: { specialComments: 0 } } })) // Opt., comment out when debugging
@@ -78,7 +78,7 @@ gulp.task('rsync', function() {
 gulp.task('watch', ['pug', 'styles', 'js', 'browser-sync'], function() {
 	gulp.watch('app/'+syntax+'/**/*.'+syntax+'', ['styles']);
 	gulp.watch(['libs/**/*.js', 'app/js/common.js'], ['js']);
-	gulp.watch('app/pug/*.pug', ['pug']);
+	gulp.watch('app/pug/*/*.pug', ['pug']);
 	gulp.watch('app/*.html', browsersync.reload);
 });
 
