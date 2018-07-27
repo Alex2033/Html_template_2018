@@ -26,6 +26,7 @@
     "gulp-sequence": "^1.0.0",
     "gulp-stylus": "^2.7.0",
     "gulp-uglify": "^3.0.0",
-    "gulp-util": "^3.0.8"
+    "gulp-util": "^3.0.8",
+    "gulp-wait": "0.0.2"
   }
 }

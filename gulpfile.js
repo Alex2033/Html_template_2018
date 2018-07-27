@@ -14,7 +14,8 @@ var gulp          = require('gulp'),
 		pug           = require('gulp-pug'),
 		htmlmin       = require('gulp-htmlmin'),
 		imagemin      = require('gulp-imagemin'),
-		gulpSequence  = require('gulp-sequence');
+		gulpSequence  = require('gulp-sequence'),
+		wait          = require('gulp-wait');
 
 gulp.task('browser-sync', function() {
 	browsersync({
@@ -38,6 +39,7 @@ gulp.task('pug', function() {
 
 gulp.task('styles', function() {
 	return gulp.src('app/sass/main.sass')
+	.pipe(wait(1000))
 	.pipe(sass({ 'include css': true }).on("error", notify.onError()))
 	.pipe(rename({ suffix: '.min', prefix : '' }))
 	.pipe(autoprefixer(['last 15 versions']))
