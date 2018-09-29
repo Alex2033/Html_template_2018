@@ -20,7 +20,7 @@ var gulp          = require('gulp'),
 gulp.task('browser-sync', function() {
 	browsersync({
 		server: {
-			baseDir: 'app'
+			baseDir: 'dev'
 		},
 		notify: false,
 		// open: false,
@@ -30,64 +30,64 @@ gulp.task('browser-sync', function() {
 });
 
 gulp.task('pug', function() {
-	return gulp.src('app/pug/pages/*.pug')
+	return gulp.src('dev/pug/pages/*.pug')
 	.pipe(pug({
 		pretty: true
 	}))
-	.pipe(gulp.dest('app'))
+	.pipe(gulp.dest('dev'))
 });
 
 gulp.task('styles', function() {
-	return gulp.src('app/sass/main.sass')
+	return gulp.src('dev/sass/main.sass')
 	.pipe(wait(1000))
 	.pipe(sass({ 'include css': true }).on("error", notify.onError()))
 	.pipe(rename({ suffix: '.min', prefix : '' }))
 	.pipe(autoprefixer(['last 15 versions']))
 	.pipe(cleancss( {level: { 1: { specialComments: 0 } } })) // Opt., comment out when debugging
-	.pipe(gulp.dest('app/css'))
+	.pipe(gulp.dest('dev/css'))
 	.pipe(browsersync.reload( {stream: true} ))
 });
 
 gulp.task('js', function() {
 	return gulp.src([
-		'app/libs/jquery/dist/jquery.min.js',
-		'app/libs/font-awesome/fontawesome-all.min.js',
-		'app/js/common.js', // Always at the end
+		'dev/libs/jquery/prod/jquery.min.js',
+		'dev/libs/font-awesome/fontawesome-all.min.js',
+		'dev/js/common.js', // Always at the end
 		])
 	.pipe(concat('scripts.min.js'))
 	// .pipe(uglify()) // Mifify js (opt.)
-	.pipe(gulp.dest('app/js'))
+	.pipe(gulp.dest('dev/js'))
 	.pipe(browsersync.reload({ stream: true }))
 });
 
 gulp.task('transfer', function(){
     return gulp.src([
-		"app/**",
-		"!app/pug",
-		"!app/sass",
-		"!app/js/common.js",
+		"dev/**",
+		"!dev/pug",
+		"!dev/sass",
+		"!dev/js/common.js",
 	])
-        .pipe(gulp.dest("dist"))
+        .pipe(gulp.dest("prod"))
 });
 
 gulp.task('html-minify', function() {
-	return gulp.src('app/*.html')
+	return gulp.src('dev/*.html')
 	  .pipe(htmlmin({collapseWhitespace: true}))
-	  .pipe(gulp.dest('dist'));
+	  .pipe(gulp.dest('prod'));
   });
 
 gulp.task('imgmin', () =>
-  gulp.src('app/img/**/*')
+  gulp.src('dev/img/**/*')
 	  .pipe(imagemin())
-	  .pipe(gulp.dest('dist/img'))
+	  .pipe(gulp.dest('prod/img'))
 );
 
 gulp.task('build', gulpSequence('transfer', 'html-minify', 'imgmin'));
 
 gulp.task('rsync', function() {
-	return gulp.src('app/**')
+	return gulp.src('dev/**')
 	.pipe(rsync({
-		root: 'app/',
+		root: 'dev/',
 		hostname: 'username@yousite.com',
 		destination: 'yousite/public_html/',
 		// include: ['*.htaccess'], // Includes files to deploy
@@ -100,10 +100,10 @@ gulp.task('rsync', function() {
 });
 
 gulp.task('watch', ['pug', 'styles', 'js', 'browser-sync'], function() {
-	gulp.watch('app/'+syntax+'/**/*.'+syntax+'', ['styles']);
-	gulp.watch(['libs/**/*.js', 'app/js/common.js'], ['js']);
-	gulp.watch('app/pug/*/*.pug', ['pug']);
-	gulp.watch('app/*.html', browsersync.reload);
+	gulp.watch('dev/'+syntax+'/**/*.'+syntax+'', ['styles']);
+	gulp.watch(['libs/**/*.js', 'dev/js/common.js'], ['js']);
+	gulp.watch('dev/pug/*/*.pug', ['pug']);
+	gulp.watch('dev/*.html', browsersync.reload);
 });
 
 gulp.task('default', ['watch']);

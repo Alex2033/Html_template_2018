@@ -1,6 +1,0 @@
-Просмотреть сборку Frontcoder
-1) Добавить в папку img папку general для общих картинок
-2) В папку sass добавить utils, pages, components, modules
-3) _adjustment поменять на _global
-4) Заменить на актуальную флекс-сетку
-5) Переименовать ht.access на .htaccess
